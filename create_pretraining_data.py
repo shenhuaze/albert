@@ -21,12 +21,12 @@ from __future__ import division
 from __future__ import print_function
 import collections
 import random
-from albert import tokenization
+import tokenization
 import numpy as np
 import six
 from six.moves import range
 from six.moves import zip
-import tensorflow.compat.v1 as tf
+import tensorflow as tf
 
 flags = tf.flags
 

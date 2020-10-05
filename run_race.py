@@ -20,13 +20,11 @@ from __future__ import print_function
 
 import os
 import time
-from albert import classifier_utils
-from albert import fine_tuning_utils
-from albert import modeling
-from albert import race_utils
-import tensorflow.compat.v1 as tf
-from tensorflow.contrib import cluster_resolver as contrib_cluster_resolver
-from tensorflow.contrib import tpu as contrib_tpu
+import classifier_utils
+import fine_tuning_utils
+import modeling
+import race_utils
+import tensorflow as tf
 
 flags = tf.flags
 
@@ -207,22 +205,22 @@ def main(_):
 
   tpu_cluster_resolver = None
   if FLAGS.use_tpu and FLAGS.tpu_name:
-    tpu_cluster_resolver = contrib_cluster_resolver.TPUClusterResolver(
+    tpu_cluster_resolver = tf.contrib.cluster_resolver.TPUClusterResolver(
         FLAGS.tpu_name, zone=FLAGS.tpu_zone, project=FLAGS.gcp_project)
 
-  is_per_host = contrib_tpu.InputPipelineConfig.PER_HOST_V2
+  is_per_host = tf.contrib.tpu.InputPipelineConfig.PER_HOST_V2
   if FLAGS.do_train:
     iterations_per_loop = int(min(FLAGS.iterations_per_loop,
                                   FLAGS.save_checkpoints_steps))
   else:
     iterations_per_loop = FLAGS.iterations_per_loop
-  run_config = contrib_tpu.RunConfig(
+  run_config = tf.contrib.tpu.RunConfig(
       cluster=tpu_cluster_resolver,
       master=FLAGS.master,
       model_dir=FLAGS.output_dir,
       save_checkpoints_steps=int(FLAGS.save_checkpoints_steps),
       keep_checkpoint_max=0,
-      tpu_config=contrib_tpu.TPUConfig(
+      tpu_config=tf.contrib.tpu.TPUConfig(
           iterations_per_loop=iterations_per_loop,
           num_shards=FLAGS.num_tpu_cores,
           per_host_input_for_training=is_per_host))
@@ -246,7 +244,7 @@ def main(_):
 
   # If TPU is not available, this will fall back to normal Estimator on CPU
   # or GPU.
-  estimator = contrib_tpu.TPUEstimator(
+  estimator = tf.contrib.tpu.TPUEstimator(
       use_tpu=FLAGS.use_tpu,
       model_fn=model_fn,
       config=run_config,

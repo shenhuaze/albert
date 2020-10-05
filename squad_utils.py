@@ -25,18 +25,15 @@ import math
 import re
 import string
 import sys
-from albert import fine_tuning_utils
-from albert import modeling
-from albert import optimization
-from albert import tokenization
+import fine_tuning_utils
+import modeling
+import optimization
+import tokenization
 import numpy as np
 import six
 from six.moves import map
 from six.moves import range
-import tensorflow.compat.v1 as tf
-from tensorflow.contrib import data as contrib_data
-from tensorflow.contrib import layers as contrib_layers
-from tensorflow.contrib import tpu as contrib_tpu
+import tensorflow as tf
 
 _PrelimPrediction = collections.namedtuple(  # pylint: disable=invalid-name
     "PrelimPrediction",
@@ -697,7 +694,7 @@ def input_fn_builder(input_file, seq_length, is_training,
       d = d.shuffle(buffer_size=100)
 
     d = d.apply(
-        contrib_data.map_and_batch(
+        tf.contrib.data.map_and_batch(
             lambda record: _decode_record(record, name_to_features),
             batch_size=batch_size,
             drop_remainder=drop_remainder))
@@ -832,7 +829,7 @@ def v1_model_fn_builder(albert_config, init_checkpoint, learning_rate,
       train_op = optimization.create_optimizer(
           total_loss, learning_rate, num_train_steps, num_warmup_steps, use_tpu)
 
-      output_spec = contrib_tpu.TPUEstimatorSpec(
+      output_spec = tf.contrib.tpu.TPUEstimatorSpec(
           mode=mode,
           loss=total_loss,
           train_op=train_op,
@@ -844,7 +841,7 @@ def v1_model_fn_builder(albert_config, init_checkpoint, learning_rate,
       }
       if unique_ids is not None:
         predictions["unique_ids"] = unique_ids
-      output_spec = contrib_tpu.TPUEstimatorSpec(
+      output_spec = tf.contrib.tpu.TPUEstimatorSpec(
           mode=mode, predictions=predictions, scaffold_fn=scaffold_fn)
     else:
       raise ValueError(
@@ -1477,7 +1474,7 @@ def create_v2_model(albert_config, is_training, input_ids, input_mask,
               albert_config.initializer_range),
           activation=tf.tanh,
           name="dense_0")
-      end_logits = contrib_layers.layer_norm(end_logits, begin_norm_axis=-1)
+      end_logits = tf.contrib.layers.layer_norm(end_logits, begin_norm_axis=-1)
 
       end_logits = tf.layers.dense(
           end_logits,
@@ -1508,7 +1505,7 @@ def create_v2_model(albert_config, is_training, input_ids, input_mask,
               albert_config.initializer_range),
           activation=tf.tanh,
           name="dense_0")
-      end_logits = contrib_layers.layer_norm(end_logits, begin_norm_axis=-1)
+      end_logits = tf.contrib.layers.layer_norm(end_logits, begin_norm_axis=-1)
       end_logits = tf.layers.dense(
           end_logits,
           1,
@@ -1667,7 +1664,7 @@ def v2_model_fn_builder(albert_config, init_checkpoint, learning_rate,
       train_op = optimization.create_optimizer(
           total_loss, learning_rate, num_train_steps, num_warmup_steps, use_tpu)
 
-      output_spec = contrib_tpu.TPUEstimatorSpec(
+      output_spec = tf.contrib.tpu.TPUEstimatorSpec(
           mode=mode,
           loss=total_loss,
           train_op=train_op,
@@ -1681,7 +1678,7 @@ def v2_model_fn_builder(albert_config, init_checkpoint, learning_rate,
           "end_top_log_probs": outputs["end_top_log_probs"],
           "cls_logits": outputs["cls_logits"]
       }
-      output_spec = contrib_tpu.TPUEstimatorSpec(
+      output_spec = tf.contrib.tpu.TPUEstimatorSpec(
           mode=mode, predictions=predictions, scaffold_fn=scaffold_fn)
     else:
       raise ValueError(

@@ -19,9 +19,9 @@ This library can be used to construct ALBERT models for fine-tuning, either from
 json config files or from TF-Hub modules.
 """
 
-from albert import modeling
-from albert import tokenization
-import tensorflow.compat.v1 as tf
+import modeling
+import tokenization
+import tensorflow as tf
 import tensorflow_hub as hub
 
 

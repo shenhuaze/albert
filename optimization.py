@@ -19,11 +19,10 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 import re
-from albert import lamb_optimizer
+import lamb_optimizer
 import six
 from six.moves import zip
-import tensorflow.compat.v1 as tf
-from tensorflow.contrib import tpu as contrib_tpu
+import tensorflow as tf
 
 
 def create_optimizer(loss, init_lr, num_train_steps, num_warmup_steps, use_tpu,
@@ -93,7 +92,7 @@ def create_optimizer(loss, init_lr, num_train_steps, num_warmup_steps, use_tpu,
     raise ValueError("Not supported optimizer: ", optimizer)
 
   if use_tpu:
-    optimizer = contrib_tpu.CrossShardOptimizer(optimizer)
+    optimizer = tf.contrib.tpu.CrossShardOptimizer(optimizer)
 
   tvars = tf.trainable_variables()
   grads = tf.gradients(

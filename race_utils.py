@@ -22,13 +22,12 @@ from __future__ import print_function
 import collections
 import json
 import os
-from albert import classifier_utils
-from albert import fine_tuning_utils
-from albert import modeling
-from albert import optimization
-from albert import tokenization
-import tensorflow.compat.v1 as tf
-from tensorflow.contrib import tpu as contrib_tpu
+import classifier_utils
+import fine_tuning_utils
+import modeling
+import optimization
+import tokenization
+import tensorflow as tf
 
 
 class InputExample(object):
@@ -395,7 +394,7 @@ def model_fn_builder(albert_config, num_labels, init_checkpoint, learning_rate,
       train_op = optimization.create_optimizer(
           total_loss, learning_rate, num_train_steps, num_warmup_steps, use_tpu)
 
-      output_spec = contrib_tpu.TPUEstimatorSpec(
+      output_spec = tf.contrib.tpu.TPUEstimatorSpec(
           mode=mode,
           loss=total_loss,
           train_op=train_op,
@@ -415,13 +414,13 @@ def model_fn_builder(albert_config, num_labels, init_checkpoint, learning_rate,
 
       eval_metrics = (metric_fn,
                       [per_example_loss, label_ids, logits, is_real_example])
-      output_spec = contrib_tpu.TPUEstimatorSpec(
+      output_spec = tf.contrib.tpu.TPUEstimatorSpec(
           mode=mode,
           loss=total_loss,
           eval_metrics=eval_metrics,
           scaffold_fn=scaffold_fn)
     else:
-      output_spec = contrib_tpu.TPUEstimatorSpec(
+      output_spec = tf.contrib.tpu.TPUEstimatorSpec(
           mode=mode,
           predictions={"probabilities": probabilities,
                        "predictions": predictions},

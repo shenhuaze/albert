@@ -23,9 +23,9 @@ import os
 import random
 import tempfile
 from absl.testing import flagsaver
-from albert import modeling
-from albert import run_pretraining
-import tensorflow.compat.v1 as tf
+import modeling
+import run_pretraining
+import tensorflow as tf
 
 FLAGS = tf.app.flags.FLAGS
 

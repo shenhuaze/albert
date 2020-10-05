@@ -20,8 +20,8 @@ from __future__ import print_function
 import os
 from absl import app
 from absl import flags
-from albert import modeling
-import tensorflow.compat.v1 as tf
+import modeling
+import tensorflow as tf
 
 flags.DEFINE_string(
     "albert_directory", None,
