@@ -32,36 +32,36 @@ FLAGS = flags.FLAGS
 
 ## Required parameters
 flags.DEFINE_string(
-    "data_dir", None,
+    "data_dir", "GLUE_DIR/MRPC/",
     "The input data dir. Should contain the .tsv files (or other data files) "
     "for the task.")
 
 flags.DEFINE_string(
-    "albert_config_file", None,
+    "albert_config_file", "ALBERT_BASE_V1_DIR/albert_base/albert_config.json",
     "The config json file corresponding to the pre-trained ALBERT model. "
     "This specifies the model architecture.")
 
-flags.DEFINE_string("task_name", None, "The name of the task to train.")
+flags.DEFINE_string("task_name", "mrpc", "The name of the task to train.")
 
 flags.DEFINE_string(
-    "vocab_file", None,
+    "vocab_file", "ALBERT_BASE_V1_DIR/albert_base/30k-clean.vocab",
     "The vocabulary file that the ALBERT model was trained on.")
 
-flags.DEFINE_string("spm_model_file", None,
+flags.DEFINE_string("spm_model_file", "ALBERT_BASE_V1_DIR/albert_base/30k-clean.model",
                     "The model file for sentence piece tokenization.")
 
 flags.DEFINE_string(
-    "output_dir", None,
+    "output_dir", "outputs/mrpc/",
     "The output directory where the model checkpoints will be written.")
 
-flags.DEFINE_string("cached_dir", None,
+flags.DEFINE_string("cached_dir", "outputs/mrpc/",
                     "Path to cached training and dev tfrecord file. "
                     "The file will be generated if not exist.")
 
 ## Other parameters
 
 flags.DEFINE_string(
-    "init_checkpoint", None,
+    "init_checkpoint", "ALBERT_BASE_V1_DIR/albert_base/model.ckpt-best",
     "Initial checkpoint (usually from a pre-trained BERT model).")
 
 flags.DEFINE_string(
@@ -74,17 +74,17 @@ flags.DEFINE_bool(
     "models and False for cased models.")
 
 flags.DEFINE_integer(
-    "max_seq_length", 512,
+    "max_seq_length", 128,
     "The maximum total input sequence length after WordPiece tokenization. "
     "Sequences longer than this will be truncated, and sequences shorter "
     "than this will be padded.")
 
-flags.DEFINE_bool("do_train", False, "Whether to run training.")
+flags.DEFINE_bool("do_train", True, "Whether to run training.")
 
-flags.DEFINE_bool("do_eval", False, "Whether to run eval on the dev set.")
+flags.DEFINE_bool("do_eval", True, "Whether to run eval on the dev set.")
 
 flags.DEFINE_bool(
-    "do_predict", False,
+    "do_predict", True,
     "Whether to run the model in inference mode on the test set.")
 
 flags.DEFINE_integer("train_batch_size", 32, "Total batch size for training.")
@@ -95,7 +95,7 @@ flags.DEFINE_integer("predict_batch_size", 8, "Total batch size for predict.")
 
 flags.DEFINE_float("learning_rate", 5e-5, "The initial learning rate for Adam.")
 
-flags.DEFINE_integer("train_step", 1000,
+flags.DEFINE_integer("train_step", 2,
                      "Total number of training steps to perform.")
 
 flags.DEFINE_integer(
@@ -140,7 +140,7 @@ flags.DEFINE_integer(
     "Only used if `use_tpu` is True. Total number of TPU cores to use.")
 
 flags.DEFINE_string(
-    "export_dir", None,
+    "export_dir", "outputs/mrpc/",
     "The directory where the exported SavedModel will be stored.")
 
 flags.DEFINE_float(
@@ -549,8 +549,8 @@ def main(_):
 
 
 if __name__ == "__main__":
-  flags.mark_flag_as_required("data_dir")
-  flags.mark_flag_as_required("task_name")
-  flags.mark_flag_as_required("spm_model_file")
-  flags.mark_flag_as_required("output_dir")
+  # flags.mark_flag_as_required("data_dir")
+  # flags.mark_flag_as_required("task_name")
+  # flags.mark_flag_as_required("spm_model_file")
+  # flags.mark_flag_as_required("output_dir")
   tf.app.run()
