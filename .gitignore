@@ -1,6 +1,8 @@
 .idea
 ALBERT*
 GLUE_DIR
+CLUENER_DIR
+TEDDYNER_DIR
 outputs
 *.pyc
 .DS_Store
